@@ -1,5 +1,5 @@
-Decoder -- The Intrig decoder on android
-============================
+Decoder -- The Intrig decoder on Android
+========================================
 
 Decoder is an example android application that uses xenon, the Intrig decoder, currently in beta (beta.intrig.com).  The 
 purpose of this project is to showcase xenon on Android, and help you get up and running with the development system.
