@@ -1,15 +1,14 @@
 Decoder -- The Intrig decoder on android
 ============================
 
-Decoder is an example android application that uses xenon, the Intrig decoder, currently in beta (beta.intrig.com).
-The purpose of this project is to showcase xenon on Android, and help you get up and running with the development
-system.
+Decoder is an example android application that uses xenon, the Intrig decoder, currently in beta (beta.intrig.com).  The 
+purpose of this project is to showcase xenon on Android, and help you get up and running with the development system.
 
 I tried to keep this application simple, yet non-trivial.  The decoder.cpp file is well documented.  
 
-Upon launch, you will first see a text window displaying "loading spec..." for a couple of seconds.  Once loaded,
-you will see a screen full of Hex ASCII strings.  These are various LTE messages.  If you press the 
-"Decode All" button, you should see the Hex ASCII strings replaced with the corresponding name of the message.
+Upon launch, you will first see a text window displaying "loading spec..." for a couple of seconds.  Once loaded, you will 
+see a screen full of Hex ASCII strings.  These are various LTE messages.  If you press the "Decode All" button, you should 
+see the Hex ASCII strings replaced with the corresponding name of the message.
 
 And that's it.
 
