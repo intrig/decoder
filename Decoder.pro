@@ -4,10 +4,10 @@ QMAKE_CXXFLAGS += -std=c++11
 
 # add xenon library and includes
 android {
-LIBS += -L/opt/xenon-2.0.0-beta3-armv7/lib -lxenon
-INCLUDEPATH += /opt/xenon-2.0.0-beta3-armv7/include
-ANDROID_EXTRA_LIBS += /opt/xenon-2.0.0-beta3-armv7/lib/libxenon.so
-ANDROID_PACKAGE_SOURCE_DIR = $$(IMSDIR)/src/visual/android/Decoder/dist
+LIBS += -L$$(ANDROID_XENON_LIB) -lxenon
+INCLUDEPATH += $$(ANDROID_XENON_LIB)/../../xenon
+ANDROID_EXTRA_LIBS += $$(ANDROID_XENON_LIB)/libxenon.so
+ANDROID_PACKAGE_SOURCE_DIR = /home/mark/work/decoder/dist
 }
 
 macx|linux {

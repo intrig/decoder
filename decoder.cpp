@@ -7,7 +7,7 @@
 Decoder::Decoder(QWidget *parent) : QMainWindow(parent), ui(new Ui::Decoder) {
     ui->setupUi(this);
     connect(ui->decodeMessage, &QPushButton::clicked, this, &Decoder::buttonClicked);
-    ui->decode->viewport()->setAttribute(Qt::WA_AcceptTouchEvents); 
+    //ui->decode->viewport()->setAttribute(Qt::WA_AcceptTouchEvents);
 
     try {
         initialize_vectors();
@@ -28,15 +28,20 @@ Decoder::Decoder(QWidget *parent) : QMainWindow(parent), ui(new Ui::Decoder) {
 
 void Decoder::load_spec() {
     try {
+#ifdef ANDROID
         spec.open("files/xddl/icd.xddl");
+#else
+        spec.open("/home/mark/work/decoder/dist/assets/xddl/icd.xddl");
+#endif
         print("spec loaded");
+        print(spec.stats());
 
         // display hex messages
         for (auto const & bs : test_vector) {
             // just show the first few bytes followed by "..."
             QString result = bs.toHexString().data();
-            if (result.size() > 25) result = result.left(22) + "...";
-            print(result);
+            if (result.size() > 23) result = result.left(20) + "...";
+            //print(result);
         }
 
         ui->decodeMessage->setEnabled(true);
@@ -57,115 +62,81 @@ void Decoder::print(QString info) {
     ui->decode->append(info);
 }
 
+
+
 Decoder::~Decoder()
 {
     delete ui;
 }
 
 void Decoder::buttonClicked() {
+
     try {
         ui->decode->clear();
+        print("button clicked");
         IT::Message m(spec);
         for (auto const & bs : test_vector) {
             m = bs;
-            print(m.find("Name").description().data());
+            auto s = m.find("Name").description();
+            if (s.size()) print(m.find("Name").description());
+            //else print(bs.toHexString());
         }
     } catch (IT::Exception & e) {
+        print("exception:");
         print(e.what());
     }
 }
 
-/* 
- * All the assets (i.e., the xddl file tree) are in the assets vector (initialized below).  Here we copy all the
- * assets into our applications file system.  
- *
- * It would be better to recursively copy the assets instead of requiring the hardcoded names of files, but getting
- * a directory listing from the assets seems to be broken in either Java or in Qt.  So this will do for now. 
- *
- * This step is required because xenon does not know how to read from the assets filesystem.  
- */
-void Decoder::copy_xddl_assets() {
+static void find_assets(QDir dir, QStringList& assets)
+{
+    QStringList entries = dir.entryList(QStringList() << "*.xo" << "*.xddl", QDir::Files);
+    for ( auto const & entry : entries )
+       assets << dir.canonicalPath() + entry;
 
-    for (auto name : assets) {
-        QString asset = "assets:/xddl" + name;
-        QString file = "files/xddl" + name;
-        QFile asset_file(asset);
-        if (!asset_file.open(QIODevice::ReadOnly)) IT_THROW("cannot find asset " << asset.data());
+    QFileInfoList infoEntries = dir.entryInfoList( QStringList(), QDir::AllDirs | QDir::NoSymLinks | QDir::NoDotAndDotDot );
+    for ( auto const & infoEntry : infoEntries )
+        find_assets( QDir( infoEntry.absoluteFilePath() ), assets );
+}
 
-        // read the asset
-        QByteArray asset_data = asset_file.readAll();
-        if (asset_data.isEmpty()) IT_THROW("could not read " << asset.data());
+void Decoder::copy_asset( const QString& asset, const QString& file )
+{
+    QFile asset_file(asset);
+    if (!asset_file.open(QIODevice::ReadOnly)) IT_THROW("cannot find asset " << asset.toStdString());
 
-        // create the dest file
-        QFileInfo dest_info(file);
-        QDir dir;
+    // read the asset
+    QByteArray asset_data = asset_file.readAll();
+    if (asset_data.isEmpty()) IT_THROW("could not read " << asset.toStdString());
 
-        if (!dir.mkpath(dest_info.path())) IT_THROW("cannot create file path " << dest_info.path().data());
-        QFile dest_file(file);
-        if (!dest_file.open(QIODevice::WriteOnly)) IT_THROW("cannot open file " << file.data());
+    // create the dest file
+    QFileInfo dest_info(file);
+    QDir dir;
 
-        // write it
-        dest_file.write(asset_data);
+    if (!dir.mkpath(dest_info.path())) IT_THROW("cannot create file path " << dest_info.path().toStdString());
+    QFile dest_file(file);
+    if (!dest_file.open(QIODevice::WriteOnly)) IT_THROW("cannot open file " << file.toStdString());
+
+    // write it
+    print(file);
+    dest_file.write(asset_data);
+}
+
+// This step is required because xenon does not know how to read from the assets filesystem.  
+void Decoder::copy_xddl_assets() 
+{
+    QStringList assets;
+    QDir asset_dir( "assets:/xddl" );
+    find_assets( asset_dir, assets );
+
+    size_t asset_path_len = asset_dir.absolutePath().size();
+    for ( auto const & asset : assets )
+    {
+        QString file = "files/xddl" + asset.right( asset.size() - asset_path_len );
+        copy_asset( asset, file );
     }
 }
 
+
 void Decoder::initialize_vectors() {
-    assets = {
-        "/3GPP/TS-34.109.xo",
-        "/IP/RFC-1934.xo",
-        "/IP/RFC-1990.xo",
-        "/3GPP/TS-24.008.xo",
-        "/IP/RFC-2484.xo",
-        "/3GPP/TS-44.060.xo",
-        "/3GPP/TS-36.331-10.xo",
-        "/3GPP2/C.S0015-B.xo",
-        "/3GPP/TS-24.011.xo",
-        "/3GPP2/C.S0024-B.xo",
-        "/IP/RFC-2290.xo",
-        "/3GPP/TS-24.080.xo",
-        "/IP/MS-CHAP-2.xo",
-        "/3GPP/TS-25.331-10.xo",
-        "/3GPP/TS-45.008.xo",
-        "/IP/RFC-1570.xo",
-        "/3GPP2/C.R1001-G.xo",
-        "/IP/RFC-1172.xo",
-        "/3GPP/TS-23.040.xo",
-        "/3GPP/TS-44.118.xo",
-        "/3GPP2/C.S0005.xo",
-        "/3GPP2/C.S0057-C.xo",
-        "/IP/LCP.xo",
-        "/3GPP/TS-25.322.xo",
-        "/3GPP/TS-24.007.xo",
-        "/IP/PAP.xo",
-        "/IP/index.xo",
-        "/3GPP2/C.S0004.xo",
-        "/3GPP/TS-04.18-08.xo",
-        "/IP/IPCP.xo",
-        "/IP/RFC-2125.xo",
-        "/IP/CHAP.xo",
-        "/IP/RFC-1877.xo",
-        "/IP/IPHC.xo",
-        "/IP/RFC-1661.xo",
-        "/3GPP/TS-05.08-08.xo",
-        "/3GPP/TS-36.331.xo",
-        "/3GPP/TS-23.003.xo",
-        "/3GPP/TS-26.103.xo",
-        "/IP/RFC-1663.xo",
-        "/IP/PPP.xo",
-        "/3GPP/TS-44.071.xo",
-        "/IP/RFC-2686.xo",
-        "/3GPP/TS-23.038.xo",
-        "/3GPP/TS-44.018.xo",
-        "/IP/VJHC-1144.xo",
-        "/3GPP/TS-04.60-08.xo",
-        "/IP/chris.xo",
-        "/IP/MS-CHAP-1.xo",
-        "/IP/RFC-2153.xo",
-        "/3GPP/TS-24.301.xo",
-        "/3GPP/TS-25.331.xo",
-        "/IP/IP.xo",
-        "/icd.xddl"
-    };
 
     /* A bunch of real world messages taken from the Intrig regression tests. */
     test_vector = {

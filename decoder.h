@@ -24,6 +24,7 @@ private slots:
     void load_spec();
 
 private:
+    void copy_asset( const QString& asset, const QString& file );
     void copy_xddl_assets();
     void initialize_vectors();
     void print(const char * info);

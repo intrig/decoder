@@ -28,7 +28,7 @@ you can change that to whatever you want.
 
 Download and install the Android NDK, Android SDK, ant, and Java.
 
-Run qtcreator, and in the Tools->Options dialog, select the Android tab.  Make sure all the paths are correct.
+Run qtcreator, and in the Tools/Options dialog, select the Android tab.  Make sure all the paths are correct.
 
 Copying Assets
 --------------
@@ -37,4 +37,9 @@ Copy the xddl directory from /opt/xenon-2.0.0-beta3-armv7/xddl into dist/assets
 
 This is a special directory used to add files to the android package that is downloaded to the device.
 
+
+Notes for Ubuntu x86-64
+-----------------------
+
+sudo apt-get install g++-multilib openjdk-7-jdk ant
 
