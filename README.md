@@ -15,7 +15,7 @@ And that's it.
 Required pacakges
 -----------------
 Of course, the Android SDK and NDK are required, version 9 or higher, as well as Qt 5.3 for Android.  The xenon shared library for
-android can be found at http://beta.intrig.com/xenon-2.0.0-beta4-linux-x86_64-armv7.tgz
+android can be found at http://beta.intrig.com/download/xenon-2.0.0-beta4-linux-x86_64-armv7.tgz
 
 Qt is only required for this Decoder project, not xenon itself.  xenon only requires the NDK.
  
@@ -28,7 +28,7 @@ After downloading the above package, run:
     cd xenon-2.0.0-beta4-linux-x86_64-armv7
     sudo install.sh
 
-The installer will copy the files to /opt/xenon-android.  This is where the Qt project expects them to be:
+The installer will simply copy the files to /opt/xenon-android.  This is where the Qt project expects them to be.
 
 
 Notes for Ubuntu x86-64
