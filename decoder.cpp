@@ -32,7 +32,7 @@ void Decoder::load_spec() {
 #ifdef ANDROID
         spec.open("files/xddl/icd.xddl");
 #else
-        spec.open("/home/mark/work/decoder/dist/assets/xddl/icd.xddl");
+        spec.open("/opt/xenon-android/dist/assets/xddl/icd.xddl");
 #endif
         print("spec loaded");
         print(spec.stats());
@@ -42,7 +42,7 @@ void Decoder::load_spec() {
             // just show the first few bytes followed by "..."
             QString result = bs.toHexString().c_str();
             if (result.size() > 23) result = result.left(20) + "...";
-            //print(result);
+            print(result);
         }
 
         ui->decodeMessage->setEnabled(true);
@@ -114,7 +114,6 @@ void Decoder::copy_asset( const QString& asset, const QString& file )
     if (!dest_file.open(QIODevice::WriteOnly)) IT_THROW("cannot open file " << file.toStdString());
 
     // write it
-    print(file);
     dest_file.write(asset_data);
 }
 

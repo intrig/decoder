@@ -2,22 +2,22 @@ QT       += core gui
 
 QMAKE_CXXFLAGS += -std=c++11
 
-# add xenon library and includes
+INCLUDEPATH += /opt/xenon-android/include
+
+# add xenon library and dist
 android {
-LIBS += -L$$(ANDROID_XENON_LIB) -lxenon
-INCLUDEPATH += $$(ANDROID_XENON_LIB)/../../xenon
-ANDROID_EXTRA_LIBS += $$(ANDROID_XENON_LIB)/libxenon.so
-# ANDROID_PACKAGE_SOURCE_DIR = /Users/Mark/work/decoder/dist
-ANDROID_PACKAGE_SOURCE_DIR = /home/mark/work/decoder/dist
+LIBS += -L/opt/xenon-android/lib -lxenon
+ANDROID_EXTRA_LIBS += /opt/xenon-android/lib/libxenon.so
+ANDROID_PACKAGE_SOURCE_DIR = /opt/xenon-android/dist
 }
 
-macx|linux {
-LIBS += -L$$(IMSDIR)/o -lxenon
-INCLUDEPATH += $$(ANDROID_XENON_LIB)/../../xenon
+#macx|linux {
+#LIBS += -L$$(IMSDIR)/o -lxenon
+#INCLUDEPATH += $$(ANDROID_XENON_LIB)/../../xenon
+#
+#}
 
-}
-
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+QT += widgets
 
 TARGET = Decoder
 TEMPLATE = app
