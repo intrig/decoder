@@ -12,7 +12,7 @@ see the Hex ASCII strings replaced with the corresponding name of the message.
 
 And that's it.
 
-Required pacakges
+Required packages
 -----------------
 Of course, the Android SDK and NDK are required, version 9 or higher, as well as Qt 5.3 for Android.  The xenon shared library for
 android can be found at http://beta.intrig.com/download/xenon-2.0.0-beta4-linux-x86_64-armv7.tgz
